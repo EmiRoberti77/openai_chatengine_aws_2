@@ -1,0 +1,17 @@
+*.js
+!jest.config.js
+*.d.ts
+node_modules
+Config.ts
+cloud/src/lambdas/chatgpt/Config.ts
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+.aws-sam/
+bedrock_sam/.aws-sam
+invoke.txt
+samconfig.toml
+.env
+.npmignore
+.DS_Store
+.vscode
