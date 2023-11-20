@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CharServer } from '../API/ChatServer';
-import {
-  ChatGptResponse,
-  fillChatResponse,
-  fillSampleChatResponse,
-  getChatResponse,
-} from '../API/model/ChatGptResponse';
+import { ChatGptResponse, getChatResponse } from '../API/model/ChatGptResponse';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../state/Store';
 import {
@@ -13,7 +8,6 @@ import {
   deleteAllHistory,
 } from '../state/features/HistorySlice';
 import { ChatHistory } from '../API/model/ChatHistory';
-import ChatOutput from './ChatOutput';
 import HistoryItem from './HistoryItem';
 import SavedHistory from './SavedHistory';
 import { Auth } from 'aws-amplify';
