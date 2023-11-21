@@ -6,10 +6,33 @@ interface UploadResponse {
   bucket: string;
   key: string;
   message: string;
+  name: string;
+  user: string;
+  desc: string;
 }
 
-const postEndpoint =
-  'https://0ypn7p2kk1.execute-api.us-east-1.amazonaws.com/prod/upload';
+interface EndpointProps {
+  user: string;
+  name: string;
+  desc: string;
+}
+
+class EndpointCreator {
+  private base =
+    'https://0ypn7p2kk1.execute-api.us-east-1.amazonaws.com/prod/upload';
+  private endpointProps: EndpointProps;
+  constructor(endpointProps: EndpointProps) {
+    this.endpointProps = endpointProps;
+  }
+
+  public get endpoint(): string {
+    if (!this.endpointProps)
+      throw Error('missing endpoint props for file transfer');
+
+    const { user, name, desc } = this.endpointProps;
+    return `${this.base}?user=${user}&filename=${name}&desc=${desc}`;
+  }
+}
 
 const S3FileUpload = () => {
   const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
@@ -17,7 +40,7 @@ const S3FileUpload = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fileDescription, setFileDescription] = useState<string>('');
 
-  const user = useSelector((state: RootState) => state.user);
+  const loggedUser = useSelector((state: RootState) => state.user);
   useEffect(() => {}, [isLoading, msg]);
 
   const onHandleFileDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,28 +59,26 @@ const S3FileUpload = () => {
     if (!selectedFile) return;
 
     setIsLoading(true);
-    const response = await axios.get(postEndpoint);
-
     try {
       console.log(selectedFile);
       const formData = new FormData();
       //pred post data
       formData.append('file', selectedFile);
-      // formData.append('user', user.username);
-      // formData.append('timestamp', new Date().toISOString());
-      // formData.append('description', fileDescription);
-      // formData.append('fileType', selectedFile.type);
-      // //formData.append('size', String(selectedFile.size));
-      // formData.append('original_name', selectedFile.name);
       //post
-      const response = await axios.post(postEndpoint, formData, {
+      const creator = new EndpointCreator({
+        user: loggedUser.username,
+        name: selectedFile.name ? selectedFile.name : 'noname',
+        desc: fileDescription,
+      });
+      const response = await axios.post(creator.endpoint, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      const { message, key } = response.data.body as UploadResponse;
+      const { message, key, name, user, desc } = response.data
+        .body as UploadResponse;
       console.info('response from transfer', message);
-      setMsg(`${message} - ${key}`);
+      setMsg(`${message} - ${desc} - ${name} - ${user}`);
     } catch (err: any) {
       console.error(err.message);
       setMsg(err.message);

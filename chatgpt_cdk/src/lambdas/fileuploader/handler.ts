@@ -25,7 +25,12 @@ export const handler: APIGatewayProxyHandler = async (
         body: 'missing body',
       });
     }
-
+    if (!event.queryStringParameters) {
+      return jsonApiProxyResultResponse(HTTP_CODE.NOT_FOUND, {
+        message: false,
+        body: 'query string with file information, user, name, desc',
+      });
+    }
     const decodeFile = Buffer.from(event.body, 'base64');
     const filename = `emi_ai_${randomUUID()}.txt`;
 
@@ -38,10 +43,15 @@ export const handler: APIGatewayProxyHandler = async (
     const command = new PutObjectCommand(params);
     await s3Client.send(command);
 
+    const { user, name, desc } = event.queryStringParameters;
+
     return jsonApiProxyResultResponse(HTTP_CODE.OK, {
       message: true,
       body: {
-        message: 'SUCCESS',
+        message: 'success',
+        user,
+        name,
+        desc,
         bucket: BUCKET_NAME,
         key: filename,
       },
