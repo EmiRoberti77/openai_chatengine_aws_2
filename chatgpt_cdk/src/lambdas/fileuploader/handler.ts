@@ -10,6 +10,7 @@ import { UploadFile } from './model/UploadFile';
 
 const BUCKET_NAME = process.env.BUCKET_NAME;
 const s3Client = new S3Client({});
+const SUCCESS = 'Transfer success';
 
 export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
@@ -40,20 +41,25 @@ export const handler: APIGatewayProxyHandler = async (
       Body: decodeFile,
     };
 
+    const startTimeTime = new Date();
     const command = new PutObjectCommand(params);
     await s3Client.send(command);
+    const completedTransferTime = new Date();
+    const transferDuration =
+      (completedTransferTime.getTime() - startTimeTime.getTime()) / 1000;
 
-    const { user, name, desc } = event.queryStringParameters;
+    const { user, name, desc, type, size } = event.queryStringParameters;
 
     return jsonApiProxyResultResponse(HTTP_CODE.OK, {
       message: true,
       body: {
-        message: 'success',
+        message: SUCCESS,
         user,
         name,
         desc,
-        bucket: BUCKET_NAME,
-        key: filename,
+        type,
+        size,
+        transferDuration,
       },
     });
   } catch (error: any) {
