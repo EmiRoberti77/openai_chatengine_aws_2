@@ -26,7 +26,6 @@ export class BedrockHandler {
         body: 'missing bedrock body in request',
       });
     }
-
     const body = JSON.parse(this.event.body);
     const { input, username, engine } = body;
 
