@@ -25,7 +25,7 @@ export class FileUploaderLambdaStack extends Stack {
       'src',
       'lambdas',
       'fileuploader',
-      'handler.ts'
+      'handler.js'
     );
 
     if (!existsSync(path)) {
@@ -54,7 +54,10 @@ export class FileUploaderLambdaStack extends Stack {
     );
 
     //create api
-    const api = new RestApi(this, 'fileuploaderApi');
+    const api = new RestApi(this, 'fileuploaderApi', {
+      //binaryMediaTypes: ['image/jpeg', 'application/pdf', 'text/plain'],
+    });
+
     const optionsWithCors: ResourceOptions = {
       defaultCorsPreflightOptions: {
         allowOrigins: Cors.ALL_ORIGINS,
