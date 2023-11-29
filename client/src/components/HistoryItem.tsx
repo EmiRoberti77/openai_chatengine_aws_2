@@ -11,7 +11,10 @@ const HistoryItem: React.FC<HistoryItemProps> = ({ historyItem }) => {
   }, []);
 
   const isValid = () => {
-    if (historyItem.engine.startsWith('bedrock')) {
+    if (
+      historyItem.engine.startsWith('bedrock') ||
+      historyItem.engine.startsWith('odin')
+    ) {
       return false;
     }
 

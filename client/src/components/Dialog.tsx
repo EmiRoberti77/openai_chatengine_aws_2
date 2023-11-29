@@ -230,6 +230,9 @@ const Dialog: React.FC = () => {
                     <option value={GEN_AI_ENGINE.BEDROCK_AI21_J2_ULTRA_V1}>
                       {GEN_AI_ENGINE.BEDROCK_AI21_J2_ULTRA_V1.toString()}
                     </option>
+                    <option value={GEN_AI_ENGINE.ODIN}>
+                      {GEN_AI_ENGINE.ODIN.toString()}
+                    </option>
                   </select>
                   <select
                     className="styled-button clear-history"

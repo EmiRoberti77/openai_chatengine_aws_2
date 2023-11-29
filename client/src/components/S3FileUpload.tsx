@@ -3,16 +3,12 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { RootState } from '../state/Store';
 import './css/S3FileUpload.css';
-interface UploadResponse {
+export interface UploadResponse {
+  originalFilename: string;
+  newFileName: string;
+  encoding: string;
+  mimeType: string;
   bucket: string;
-  key: string;
-  message: string;
-  name: string;
-  user: string;
-  desc: string;
-  size: number;
-  type: string;
-  transferDuration: number;
 }
 
 interface EndpointProps {
@@ -22,10 +18,9 @@ interface EndpointProps {
   type: string;
   size: number;
 }
-
 class EndpointCreator {
-  private base =
-    'https://0ypn7p2kk1.execute-api.us-east-1.amazonaws.com/prod/upload';
+  // private base='https://6njr8c9o5h.execute-api.us-east-1.amazonaws.com/prod/upload';
+  private base = 'http://3.89.253.160:3005/transfer';
   private endpointProps: EndpointProps;
   private verbose: boolean = false;
   constructor(endpointProps: EndpointProps, verbose: boolean = false) {
@@ -94,9 +89,9 @@ const S3FileUpload = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      const uploadResponse: UploadResponse = response.data.body;
+      const uploadResponse: UploadResponse = response.data;
       console.info('upload response', uploadResponse);
-      setMsg(uploadResponse.message);
+      setMsg(`created:${uploadResponse.newFileName}`);
     } catch (err: any) {
       console.error(err.message);
       setMsg(err.message);

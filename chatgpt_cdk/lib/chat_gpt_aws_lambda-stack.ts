@@ -80,6 +80,7 @@ export class ChatGptAwsLambdaStack extends cdk.Stack {
         resources: [
           table.tableArn,
           'arn:aws:ssm:us-east-1:432599188850:parameter/chat_gpt_api_key',
+          'arn:aws:ssm:us-east-1:432599188850:parameter/odin_aix_endpoint',
           `${table.tableArn}/index/userNameDateIndex`,
         ],
         actions: ['*'],

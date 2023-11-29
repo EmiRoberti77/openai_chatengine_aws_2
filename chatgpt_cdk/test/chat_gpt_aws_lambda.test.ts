@@ -1,18 +1,21 @@
 import { handler } from '../src/lambdas/handler';
 import { HTTP_METHOD, allModels } from '../src/util';
 
-const testChatLambda = async (): Promise<void> => {
+const testChatLambda = async (index: number): Promise<void> => {
   const param = {
     httpMethod: HTTP_METHOD.POST,
     body: JSON.stringify({
-      input: 'what is 2+2+3=?',
+      input: 'retail trends in the uk',
       username: 'emi_code',
-      engine: allModels[1],
+      engine: allModels[index],
     }),
   };
 
   const response = await handler(param as any);
   console.log(response);
 };
-
-testChatLambda();
+//0 chatgpt 3.5 turbo
+//1 chatgpt 4
+//2 bedrock
+//3 odin
+testChatLambda(0);

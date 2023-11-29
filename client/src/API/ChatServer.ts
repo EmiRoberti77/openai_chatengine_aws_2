@@ -15,7 +15,24 @@ export class CharServer {
   }
 
   private async postRequest(chatInput: ChatInput): Promise<ChatGptResponse> {
+    // if (chatInput.engine.startsWith('ODIN')) {
+    //   const response = await axios.post(
+    //     `http://18.209.50.73:8001/input`,
+    //     { input: chatInput.input },
+    //     {
+    //       headers: {
+    //         'content-type': 'application/json',
+    //       },
+    //     }
+    //   );
+    //   return this.fillResponse(response.data.body, 'odin assistant', {
+    //     completion_tokens: 0,
+    //     total_tokens: 0,
+    //     prompt_tokens: 0,
+    //   });
+    // }
     try {
+      console.info(this.endpoint, chatInput);
       const response = await axios.post(this.endpoint, chatInput, {
         headers: {
           'x-api-key': process.env.REACT_APP_API_KEY!,

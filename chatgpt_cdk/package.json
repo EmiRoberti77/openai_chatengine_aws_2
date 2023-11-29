@@ -30,6 +30,7 @@
     "aws-cdk-lib": "^2.99.1",
     "aws-multipart-parser": "^0.2.1",
     "busboy": "^1.6.0",
+    "cdk": "^2.111.0",
     "constructs": "^10.2.70",
     "lambda-multipart-parser": "^1.0.1",
     "openai": "^4.11.0",

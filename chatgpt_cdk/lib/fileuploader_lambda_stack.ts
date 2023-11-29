@@ -55,7 +55,12 @@ export class FileUploaderLambdaStack extends Stack {
 
     //create api
     const api = new RestApi(this, 'fileuploaderApi', {
-      //binaryMediaTypes: ['image/jpeg', 'application/pdf', 'text/plain'],
+      binaryMediaTypes: [
+        'image/jpeg',
+        'image/png',
+        'application/pdf',
+        'text/plain',
+      ],
     });
 
     const optionsWithCors: ResourceOptions = {
