@@ -1,5 +1,10 @@
 
 Emi notes on the project
+log:29/11/23
+[ ] transfer file upload into EC2 to write into S3 Bucket
+[ ] integrate odin oaix into the main handler.ts fot the engine
+[ ] create connection from UI to lambda for odin
+[ ] create EC2 for ODIN engine
 [ ] fix file upload converting a buffer
 [ ] create file upload to S3 storage
 log:5/11/23

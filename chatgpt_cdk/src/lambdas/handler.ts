@@ -35,23 +35,19 @@ const post = async (
   const { engine } = JSON.parse(event.body);
   var api: ChatGptHandler | BedrockHandler | OdinAixHandler;
 
-  console.info('engine', engine);
   switch (engine) {
     case GEN_AI_ENGINE.CHATGPT_GPT3_5_TURBO:
     case GEN_AI_ENGINE.CHATGPT_GPT4:
-      console.info('in switch chatgpt', engine);
       api = new ChatGptHandler(event);
       return await api.post();
     case GEN_AI_ENGINE.BEDROCK_AI21_J2_ULTRA_V1:
-      console.info('in switch bedrock', engine);
       api = new BedrockHandler(event);
       return await api.post();
     case GEN_AI_ENGINE.ODIN:
-      console.info('in switch odin', engine);
       api = new OdinAixHandler(event);
-      return await api.init();
+      await api.init(); //make that odin oix is initiated to access the end point internally
+      await api.post();
     default:
-      console.info('in switch default', engine);
       return jsonApiProxyResultResponse(HTTP_CODE.OK, {
         message: false,
         body: 'error:No correct gen ai engine specified',

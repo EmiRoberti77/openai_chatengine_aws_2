@@ -60,3 +60,9 @@ export enum HTTP_METHOD {
   GET = 'GET',
   POST = 'POST',
 }
+
+export interface ChatInput {
+  username: string;
+  input: string;
+  engine: string;
+}
