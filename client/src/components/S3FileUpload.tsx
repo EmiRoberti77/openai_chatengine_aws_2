@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { RootState } from '../state/Store';
 import './css/S3FileUpload.css';
+import { S3Api, s3TransferEndPoint } from '../API/S3Api';
 export interface UploadResponse {
   originalFilename: string;
   newFileName: string;
@@ -11,32 +12,16 @@ export interface UploadResponse {
   bucket: string;
 }
 
-interface EndpointProps {
-  user: string;
-  name: string;
-  desc: string;
-  type: string;
+export interface S3RDSParams {
+  filename: string;
   size: number;
-}
-class EndpointCreator {
-  // private base='https://6njr8c9o5h.execute-api.us-east-1.amazonaws.com/prod/upload';
-  private base = 'http://3.89.253.160:3005/transfer';
-  private endpointProps: EndpointProps;
-  private verbose: boolean = false;
-  constructor(endpointProps: EndpointProps, verbose: boolean = false) {
-    this.endpointProps = endpointProps;
-    this.verbose = verbose;
-  }
-
-  public get endpoint(): string {
-    if (!this.endpointProps)
-      throw Error('missing endpoint props for file transfer');
-
-    const { user, name, desc, type, size } = this.endpointProps;
-    const endpoint = `${this.base}?user=${user}&name=${name}&desc=${desc}&type=${type}&size=${size}`;
-    if (this.verbose) console.info('transfer file endpoint=>', endpoint);
-    return endpoint;
-  }
+  description: string;
+  category: string;
+  user: string;
+  entityId: string;
+  timestamp: Date;
+  content_type: string;
+  active: boolean;
 }
 
 const S3FileUpload = () => {
@@ -69,29 +54,21 @@ const S3FileUpload = () => {
 
     setIsLoading(true);
     try {
-      console.log(selectedFile);
-      const formData = new FormData();
-      //prep file to for post
-      formData.append('file', selectedFile);
-      //prep extra info to associate with the file
-      const endpointProps: EndpointProps = {
+      const s3Params: S3RDSParams = {
         user: loggedUser.username,
-        name: selectedFile.name ? selectedFile.name : 'noname',
-        desc: fileDescription,
-        type: selectedFile.type,
+        filename: selectedFile.name ? selectedFile.name : 'noname',
+        description: fileDescription,
+        content_type: selectedFile.type,
         size: selectedFile.size,
+        category: 'GENERALs',
+        entityId: 'emi_oaix_1',
+        timestamp: new Date(),
+        active: true,
       };
-      //create endpoint
-      const creator = new EndpointCreator(endpointProps, true);
-      //post
-      const response = await axios.post(creator.endpoint, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      const uploadResponse: UploadResponse = response.data;
-      console.info('upload response', uploadResponse);
-      setMsg(`created:${uploadResponse.newFileName}`);
+
+      const s3api = new S3Api(s3Params, selectedFile);
+      const isTransferred: boolean = await s3api.transfer();
+      setMsg(`created:${isTransferred}`);
     } catch (err: any) {
       console.error(err.message);
       setMsg(err.message);
