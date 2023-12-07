@@ -40,6 +40,26 @@ const S3FileUpload = () => {
     setFileDescription(e.target.value);
   };
 
+  const createS3Params = (): S3RDSParams => {
+    if (!selectedFile) {
+      throw new Error('selected file is undefined');
+    }
+
+    const s3Params: S3RDSParams = {
+      user: loggedUser.username,
+      filename: selectedFile.name ? selectedFile.name : 'noname',
+      description: fileDescription,
+      content_type: selectedFile.type,
+      size: selectedFile.size,
+      category: 'GENERALs',
+      entityId: 'emi_oaix_1',
+      timestamp: new Date(),
+      active: true,
+    };
+
+    return s3Params;
+  };
+
   const onHandleDocument = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files?.length > 0) {
       setSelectedFile(e.target.files[0]);
@@ -51,22 +71,9 @@ const S3FileUpload = () => {
 
   const transfer = async () => {
     if (!selectedFile) return;
-
     setIsLoading(true);
     try {
-      const s3Params: S3RDSParams = {
-        user: loggedUser.username,
-        filename: selectedFile.name ? selectedFile.name : 'noname',
-        description: fileDescription,
-        content_type: selectedFile.type,
-        size: selectedFile.size,
-        category: 'GENERALs',
-        entityId: 'emi_oaix_1',
-        timestamp: new Date(),
-        active: true,
-      };
-
-      const s3api = new S3Api(s3Params, selectedFile);
+      const s3api = new S3Api(createS3Params(), selectedFile);
       const isTransferred: boolean = await s3api.transfer();
       setMsg(`created:${isTransferred}`);
     } catch (err: any) {
